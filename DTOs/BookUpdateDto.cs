@@ -1,15 +1,22 @@
-﻿namespace BookLibraryAPI.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookLibraryAPI.DTOs
 {
     // used when updating an existing book
     public class BookUpdateDto
     {
-        // updated title
+        // title is required and cannot be empty
+        [Required]
+        [StringLength(200, MinimumLength = 1)]
         public string Title { get; set; } = string.Empty;
 
-        // updated author
+        // author is required and cannot be empty
+        [Required]
+        [StringLength(200, MinimumLength = 1)]
         public string Author { get; set; } = string.Empty;
 
-        // updated year
+        // year must be between 1000 and current year
+        [Range(1000, 2100)]
         public int Year { get; set; }
 
         // updated read status

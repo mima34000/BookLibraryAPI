@@ -28,8 +28,10 @@ namespace BookLibraryAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+            if (id <= 0) return BadRequest("Invalid id");
+
             var book = await _bookService.GetByIdAsync(id);
-            if (book == null) return NotFound();
+            if (book == null) return NotFound($"Book with id {id} was not found");
             return Ok(book);
         }
 
@@ -37,6 +39,8 @@ namespace BookLibraryAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BookCreateDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var book = await _bookService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = book.Id }, book);
         }
@@ -45,8 +49,11 @@ namespace BookLibraryAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, BookUpdateDto dto)
         {
+            if (id <= 0) return BadRequest("Invalid id");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var book = await _bookService.UpdateAsync(id, dto);
-            if (book == null) return NotFound();
+            if (book == null) return NotFound($"Book with id {id} was not found");
             return Ok(book);
         }
 
@@ -54,8 +61,10 @@ namespace BookLibraryAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0) return BadRequest("Invalid id");
+
             var result = await _bookService.DeleteAsync(id);
-            if (!result) return NotFound();
+            if (!result) return NotFound($"Book with id {id} was not found");
             return NoContent();
         }
     }
